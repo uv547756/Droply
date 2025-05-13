@@ -1,5 +1,5 @@
-import {pgTable, text, uuid, integer, boolean, timestamp} from "drizzle-orm/pg-core"
-import {relations} from "drizzle-orm"
+import {pgTable, text, uuid, integer, boolean, timestamp} from "drizzle-orm/pg-core";
+import {relations} from "drizzle-orm";
 
 export const files = pgTable("files", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -27,7 +27,7 @@ export const files = pgTable("files", {
   //Time stamps
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-})
+});
 
 // reference: https://orm.drizzle.team/docs/relations
 //
@@ -40,13 +40,13 @@ export const filesRelations = relations(files, ({one, many}) => ({
   }),
   
   //relationship to child files/folder
-  children: many(files) //many children inside 1 folder
-}))
+  children: many(files), //many children inside 1 folder
+}));
 
 
 // Type definations
-export const File = typeof files.$inferSelect
-export const NewFile = typeof files.$inferInsert
+export const File = typeof files.$inferSelect;
+export const NewFile = typeof files.$inferInsert;
 // type File = {
 // id: string;
 // name: string;

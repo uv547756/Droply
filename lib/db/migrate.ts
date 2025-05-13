@@ -1,9 +1,9 @@
 // Custom migrator
-import {migrate} from "drizzle-orm/neon-htto/migrator";
+import {migrate} from "drizzle-orm/neon-http/migrator";
 import {drizzle} from "drizzle-orm/neon-http";
 import {neon} from "@neondatabase/serverless";
 
-import * as dotenv from "dotenv"
+import * as dotenv from "dotenv";
 
 dotenv.config({path: ".env.local"});
 
@@ -24,4 +24,4 @@ async function runMigration() {
   }
 }
 
-runMigration()
+runMigration();
