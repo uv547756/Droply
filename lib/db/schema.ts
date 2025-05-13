@@ -29,4 +29,29 @@ export const files = pgTable("files", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 })
 
+// reference: https://orm.drizzle.team/docs/relations
+//
+// parent: Each file/folder can have one parent folder
+// children: Each folder can have many files/folder
+export const filesRelations = relations(files, ({one, many}) => ({
+  parent: one(files, {
+    fields: [files.parentId], //foreign key
+    references: [files.id]
+  }),
+  
+  //relationship to child files/folder
+  children: many(files) //many children inside 1 folder
+}))
+
+
+// Type definations
+export const File = typeof files.$inferSelect
+export const NewFile = typeof files.$inferInsert
+// type File = {
+// id: string;
+// name: string;
+// isFolder: boolean;
+// and other inferred fields
+// }
+
 
