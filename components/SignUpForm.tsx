@@ -63,7 +63,7 @@ export default function SignUpForm() {
     } catch (error: any) {
       console.log("Signup error: ", error);
       setAuthError(
-        error.errors?.[0].message || "An error occured during the signup. please try again"
+        error.errors?.[0]?.message || "An error occured during the signup. please try again"
       )
     } finally{
       setIsSubmitting(false);
