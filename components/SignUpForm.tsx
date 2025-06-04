@@ -1,6 +1,6 @@
 "use client"
 
-import {useForm} from "reach-hook-form";
+import {useForm} from "react-hook-form";
 import { useSignUp } from "@clerk/nextjs";
 import {z} from "zod";
 import Link from "next/link";
