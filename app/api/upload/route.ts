@@ -1,7 +1,7 @@
 import {db} from "@/lib/db";
 import {files} from "@/lib/db/schema";
 import {auth} from "@clerk/nextjs/server";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try{
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({error: "Unauthorized"}, {status: 401});
     }
 
-    if (!imagekit || !imagekiturl){
+    if (!imagekit || !imagekit.url){
       return NextResponse.json({error: "Unauthorized"}, {status: 400});
     }
     

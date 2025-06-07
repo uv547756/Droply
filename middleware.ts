@@ -1,5 +1,6 @@
 // https://clerk.com/docs/references/nextjs/custom-sign-in-or-up-page
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server';
 
 const isPublicRoute = createRouteMatcher(['/','/sign-in(.*)','/sign-up(.*)'])
 
@@ -7,7 +8,7 @@ export default clerkMiddleware(async (auth, request) => {
   const user = auth();
   const userId = (await user).userId;
 
-  const url = new URL(request.URL);
+  const url = new URL(request.url);
   
   
   if (userId && isPublicRoute(request) && url.pathname !== "/") {

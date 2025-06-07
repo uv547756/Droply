@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 
 import ImageKit from "imagekit";
-import { getUploadAuthParams } from "@imagekit/next/server";
 
 const imagekit = new ImageKit({
   publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || "",
@@ -20,6 +19,8 @@ export async function GET(){
     const authParams = imagekit.getAuthenticationParameters();
     return NextResponse.json(authParams);
   } catch (error){
-    return NextResponse.json({error: "Failed to generate authenticaton parameters for imagekit"},{status: "500"})
+    return NextResponse.json(
+      {error: "Failed to generate authenticaton parameters for imagekit"},
+      {status: 500})
   }
 };

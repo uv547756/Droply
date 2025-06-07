@@ -6,7 +6,7 @@ import {z} from "zod";
 import Link from "next/link";
 
 //zod custom schema
-import {signUpSchema} from "@schemas/signUpSchema";
+import {signUpSchema} from "@/schemas/signUpSChema";
 import {useState} from "react";
 import {zodResolver} from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -25,12 +25,14 @@ import {
 
 export default function SignUpForm() {
   const router = useRouter();
-  const [verifying, setVerifying] = useState{false};
-  const [isSubmiting, setIsSubmitting] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [authError, setAuthError] = useState<string | null>(null);
   const [verificationError, setVerificationError] = useState<string | null>(null);
   const {signUp, isLoaded, setActive} = useSignUp();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const {
       register,
@@ -78,23 +80,22 @@ export default function SignUpForm() {
     setAuthError(null);
 
     try {
-        const result = await signUp.
-          attemptEmailAddressVerification({
+        const result = await signUp.attemptEmailAddressVerification({
             code: verificationCode
-        })
+        });
+
         console.log("Result: ", result)
         if(result.status === "complete"){
-          await setActive({session: result.
-          createdSessionId})
-          router.push("/dashboard")
+          await setActive({session: result.createdSessionId});
+          router.push("/dashboard");
         }else{
-          console.error("Verification Incomplete.", result)
+          console.error("Verification Incomplete.", result);
           setVerificationError(
             "Verification Could not be complete"
-          )
+          );
         }
     } catch (error: any) {
-      console.error("Verification Incomplete.", result)
+      console.error("Verification Incomplete.", error)
       setVerificationError(
         error.errors?.[0]?.message ||
           "An error occured during the signup. please try again"

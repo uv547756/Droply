@@ -1,20 +1,31 @@
 "use client"
 
+import { useState } from "react";
 import {useForm} from "react-hook-form";
 import {useSignIn} from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
+import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
+import { Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Divider } from "@heroui/divider";
+
 import {z} from "zod";
-import {signInSchema} from "@schemas/signInSchema";
+import {signInSchema} from "@/schemas/signInSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function SignInForm(){
   const router = useRouter();
   const {signIn, isLoaded, setActive} = useSignIn();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
-    handleSubmit
+    handleSubmit,
+    formState: {errors}
   } = useForm({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -34,7 +45,7 @@ export default function SignInForm(){
         password: data.password
       })
       if(result.status === "complete"){
-        await setActive({session: result.createSessionId});
+        await setActive({session: result.createdSessionId});
       }else{
         setAuthError("Sign in Error");
       }
