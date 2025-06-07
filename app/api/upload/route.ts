@@ -11,14 +11,14 @@ export async function POST(request: NextRequest) {
     }
     //parse request body
     const body = await request.json()
-    const {imagekit, userId: bodyUserId} = body
+    const {imagekit, userId: bodyUserId} = body //copy userId from front-end itself
 
     if (bodyUserId !== userId){
       return NextResponse.json({error: "Unauthorized"}, {status: 401});
     }
 
     if (!imagekit || !imagekit.url){
-      return NextResponse.json({error: "Unauthorized"}, {status: 400});
+      return NextResponse.json({error: "Invalid file upload data."}, {status: 401});
     }
     
     const fileData = {
