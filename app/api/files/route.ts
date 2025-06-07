@@ -30,9 +30,11 @@ export async function GET(request: NextRequest) {
 
         //fetch files from db
         let userFiles;
+
+        // fetch a specifc file based on parentId 
         if(parentId){
             //fetching from a specific folder
-            const userFiles = await db
+            userFiles = await db
             .select()
             .from(files)
             .where(
@@ -42,7 +44,8 @@ export async function GET(request: NextRequest) {
                 )
             )
         } else {
-            await db
+            //fetch root level files when its not inside a folder, i.e., parentId is null
+            userFiles = await db
                 .select()
                 .from(files)
                 .where(
