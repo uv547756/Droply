@@ -52,8 +52,8 @@ export async function PATCH(
                 let imagekitFileId = null;
 
                 if (file.fileUrl) {
-                    const urlWIthotQuery = file.fileUrl.split("?")[0];
-                    imagekitFileId = urlWIthotQuery.split("/").pop();
+                    const urlWithotQuery = file.fileUrl.split("?")[0];
+                    imagekitFileId = urlWithotQuery.split("/").pop();
                 }
 
                 if(!imagekitFileId && file.path) {
@@ -82,7 +82,7 @@ export async function PATCH(
             }
         }
 
-        //toggle the delete status
+        // Deleing the file
         const [deletedFile] = await db.delete(files).where(
             and(
                 eq(files.id, fileId),
