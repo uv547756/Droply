@@ -38,13 +38,13 @@ export async function PATCH(
         if (!file){
             return NextResponse.json(
                 {error: "File not found."},
-                {status: 401}
+                {status: 404}
             )
         };
 
-        const trashedFiles = await db
+        const [trashedFile] = await db
             .update(files)
-            .set({isTrash: true})
+            .set({isTrash: !file.isTrash})
             .where(
                 and(
                     eq(files.id, fileId),
@@ -52,13 +52,17 @@ export async function PATCH(
                 )
             ).returning();
         
-        const trashedFile = trashedFiles[0];
-        return NextResponse.json(trashedFile);
+        const action = trashedFile.isTrash ? "moved to trash" : "restored";
+        return NextResponse.json({
+            ...trashedFile,
+            message: `File ${action} successfully`,
+    });
+
     } catch (error) {
         console.log("Error trashing file: ", error)
         return NextResponse.json(
             {error: "Failed to update file."},
-            {status: 401}
+            {status: 500}
         );
     }
 }
