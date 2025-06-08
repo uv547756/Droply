@@ -45,13 +45,14 @@ export const filesRelations = relations(files, ({one, many}) => ({
 
 
 // Type definations
-export const File = typeof files.$inferSelect;
-export const NewFile = typeof files.$inferInsert;
-// type File = {
-// id: string;
-// name: string;
-// isFolder: boolean;
-// and other inferred fields
-// }
+export type File = typeof files.$inferSelect;
+export type NewFile = typeof files.$inferInsert;
+// equivalent to saying:
+    // type File = {
+    // id: string;
+    // name: string;
+    // isFolder: boolean;
+    // and other inferred fields
+    // }
 
 
