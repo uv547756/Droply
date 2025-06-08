@@ -1,52 +1,46 @@
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
-import { auth } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import ImageKit from "imagekit";
-import { NextRequest, NextResponse } from "next/server";
 
+// Initialize ImageKit with your credentials
 const imagekit = new ImageKit({
   publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || "",
-  privateKey: process.env.NEXT_PUBLIC_IMAGEKIT_PRIVATE_KEY || "",
-  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || ""
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
+  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || "",
 });
 
 export async function DELETE() {
-    try {
-        const {userId} = await auth();
-        if (!userId){
-            return NextResponse.json(
-                {error: "Unauthorized"},
-                {status: 401}
-            );
-        
-        }
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-        const trashedFiles = await db
-            .select()
-            .from(files)
-            .where(
-                and(
-                    eq(files.userId, userId),
-                    eq(files.isTrash, true)
-                )
-            );
+    // Get all files in trash for this user
+    const trashedFiles = await db
+      .select()
+      .from(files)
+      .where(and(eq(files.userId, userId), eq(files.isTrash, true)));
 
-        if (trashedFiles.length === 0) {
-            return NextResponse.json(
-                {error: "No files to trash"},
-                {status: 200}
-            );
-        }
+    if (trashedFiles.length === 0) {
+      return NextResponse.json(
+        { message: "No files in trash" },
+        { status: 200 }
+      );
+    }
 
-        const deletePromises = trashedFiles
-            .filter((file) => !file.isFolder)
-            .map(async (file) => {
-                try {
-                    let imagekitFileId = null;
+    // Delete files from ImageKit
+    const deletePromises = trashedFiles
+      .filter((file) => !file.isFolder) // Skip folders
+      .map(async (file) => {
+        try {
+          let imagekitFileId = null;
 
-                    if (files.fileUrl) {
-                        const urlWithoutQuery = file.fileUrl.split("?")[0];
+          if (file.fileUrl) {
+            const urlWithoutQuery = file.fileUrl.split("?")[0];
             imagekitFileId = urlWithoutQuery.split("/").pop();
           }
 
