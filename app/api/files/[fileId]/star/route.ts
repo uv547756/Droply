@@ -55,7 +55,11 @@ export async function PATCH(
         return NextResponse.json(updatedFile)
 
     } catch (error) {
-
+        console.log("An error occured while updating file(s): ", error);
+        return NextResponse.json(
+            {error: "An error occured while deleting the file."},
+            {status: 401}
+        );
     }
     
 }
